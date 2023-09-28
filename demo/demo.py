@@ -7,6 +7,7 @@ import time
 import cv2
 import tqdm
 import sys
+import numpy as np
 
 #TODO : this is a temporary expedient
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -101,7 +102,13 @@ if __name__ == "__main__":
                 else:
                     assert len(args.input) == 1, "Please specify a directory with args.output"
                     out_filename = args.output
-                visualized_output.save(out_filename)
+                # visualized_output.save(out_filename)
+                
+                segmentation_mask = np.zeros((visualized_output.height, visualized_output.width))
+                for mask in predictions['instances'].pred_masks:
+                    segmentation_mask +=  mask.cpu().detach().numpy().astype('uint8')
+                segmentation_mask[segmentation_mask>1] = 1
+                cv2.imwrite(out_filename.replace(".jpg", "")+f"_mask.jpg", 255*segmentation_mask)
             else:
                 cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
                 if cv2.waitKey(0) == 27:
