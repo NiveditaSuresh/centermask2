@@ -86,7 +86,10 @@ if __name__ == "__main__":
             assert args.input, "The input path(s) was not found"
         for path in tqdm.tqdm(args.input, disable=not args.output):
             # use PIL, to be consistent with evaluation
-            img = read_image(path, format="BGR")
+            # UPDATE: Using PIL does not work with our 32-bit integer image format. 
+            # Changing this to part of the code to use OPENCV
+            # img = read_image(path, format="BGR")
+            img = cv2.imread(path)
             start_time = time.time()
             predictions, visualized_output = demo.run_on_image(img)
             logger.info(
