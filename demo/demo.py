@@ -111,7 +111,8 @@ if __name__ == "__main__":
                 for mask in predictions['instances'].pred_masks:
                     segmentation_mask +=  mask.cpu().detach().numpy().astype('uint8')
                 segmentation_mask[segmentation_mask>1] = 1
-                cv2.imwrite(out_filename.replace(".jpg", "")+f"_mask.jpg", 255*segmentation_mask)
+                mask_file_name = out_filename.rsplit(".",1)[0]
+                cv2.imwrite(mask_file_name+f"_mask.jpg", 255*segmentation_mask)
             else:
                 cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
                 if cv2.waitKey(0) == 27:
